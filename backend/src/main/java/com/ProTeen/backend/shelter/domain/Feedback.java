@@ -21,6 +21,4 @@ public class Feedback {
     private Shelter shelter;    // 댓글에 해당하는 쉘터.
     private Score score;
     private String comment;
-
-
 }

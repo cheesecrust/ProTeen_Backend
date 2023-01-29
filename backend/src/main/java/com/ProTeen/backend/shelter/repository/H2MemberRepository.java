@@ -2,6 +2,7 @@ package com.ProTeen.backend.shelter.repository;
 
 import com.ProTeen.backend.shelter.domain.Member;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -12,7 +13,7 @@ import java.util.Optional;
 @Repository
 public class H2MemberRepository implements MemberRepository {
 
-
+    @PersistenceContext
     private final EntityManager em;
 
 

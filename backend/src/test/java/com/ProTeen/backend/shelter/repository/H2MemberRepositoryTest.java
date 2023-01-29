@@ -18,10 +18,12 @@ class H2MemberRepositoryTest {
     private H2MemberRepository memberRepository;
     @Test
     @DisplayName("멤버 저장과 Id 검색")
-    void save_fingById() {
+    void save_findById() {
         Member member = new Member();
         memberRepository.save(member);
-        Assertions.assertThat(member).isEqualTo(memberRepository.findById(member.getId()).orElse(null));
+        Assertions.assertThat(member)
+                .isEqualTo(memberRepository.findById(member.getId())
+                        .orElse(null));
     }
 
     @Test
@@ -30,7 +32,9 @@ class H2MemberRepositoryTest {
         Member member = new Member();
         member.setName("Hello");
         memberRepository.save(member);
-        Assertions.assertThat(member).isEqualTo(memberRepository.findByName(member.getName()).orElse(null));
+        Assertions.assertThat(member)
+                .isEqualTo(memberRepository.findByName(member.getName())
+                        .orElse(null));
     }
 
     @Test
