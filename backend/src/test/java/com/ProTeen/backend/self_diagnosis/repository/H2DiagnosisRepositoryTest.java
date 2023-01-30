@@ -2,7 +2,6 @@ package com.ProTeen.backend.self_diagnosis.repository;
 
 import com.ProTeen.backend.self_diagnosis.domain.Diagnosis;
 import com.ProTeen.backend.self_diagnosis.domain.Diagnosis_Name;
-import jakarta.persistence.PersistenceContext;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.springframework.test.context.transaction.TestTransaction.flagForCommit;
 
 
 @SpringBootTest
@@ -18,33 +16,35 @@ import static org.springframework.test.context.transaction.TestTransaction.flagF
 class H2DiagnosisRepositoryTest {
 
     @Autowired
-    private H2DiagnosisRepository diagnosisRepository;
+    private JPADiagnosisRepository diagnosisRepository;
 
     @Test
     @DisplayName("자가진단 저장, 카테고리 별로 하나 저장되는지 여부")
     void save_findByCategory(){
+
         Diagnosis diagnosis = new Diagnosis();
-        diagnosis.setCategory(Diagnosis_Name.FIRST);
+        diagnosis.setId(Diagnosis_Name.FIRST);
         diagnosisRepository.save(diagnosis);
         Diagnosis diagnosis1 = new Diagnosis();
-        diagnosis1.setCategory(Diagnosis_Name.SECOND);
+        diagnosis1.setId(Diagnosis_Name.SECOND);
         diagnosisRepository.save(diagnosis1);
 
-        Assertions.assertThat(diagnosisRepository.findByCategory(diagnosis.getCategory()).orElse(null))
-                .isEqualTo(diagnosis);
+        Assertions.assertThat(diagnosisRepository.findById(diagnosis.getId()).get().getId())
+                .isEqualTo(diagnosis.getId());
     }
+
     @Test
     @DisplayName("자가진단 전체검색")
     void findAll() {
         int before = diagnosisRepository.findAll().size();
         Diagnosis diagnosis = new Diagnosis();
-        diagnosis.setCategory(Diagnosis_Name.FIRST);
+        diagnosis.setId(Diagnosis_Name.FIRST);
         diagnosisRepository.save(diagnosis);
         Diagnosis diagnosis1 = new Diagnosis();
-        diagnosis1.setCategory(Diagnosis_Name.SECOND);
+        diagnosis1.setId(Diagnosis_Name.SECOND);
         diagnosisRepository.save(diagnosis1);
         Diagnosis diagnosis2 = new Diagnosis();
-        diagnosis2.setCategory(Diagnosis_Name.SECOND);
+        diagnosis2.setId(Diagnosis_Name.SECOND);
         diagnosisRepository.save(diagnosis2);
         int after = diagnosisRepository.findAll().size();
 
@@ -58,13 +58,13 @@ class H2DiagnosisRepositoryTest {
         Diagnosis diagnosis1 = new Diagnosis();
         diagnosis1.getDignosis_list().add("첫번째");
         diagnosis1.getDignosis_list().add("두번째");
-        diagnosis1.setCategory(Diagnosis_Name.FIRST);
+        diagnosis1.setId(Diagnosis_Name.FIRST);
         diagnosisRepository.save(diagnosis1);
 
         Diagnosis diagnosis2 = new Diagnosis();
         diagnosis2.getDignosis_list().add("첫번째");
         diagnosis2.getDignosis_list().add("두번째");
-        diagnosis2.setCategory(Diagnosis_Name.SECOND);
+        diagnosis2.setId(Diagnosis_Name.SECOND);
         diagnosisRepository.save(diagnosis2);
 
         Assertions.assertThat(diagnosis1.getDignosis_list().size())

@@ -5,6 +5,7 @@ import com.ProTeen.backend.self_diagnosis.domain.DiagnosisResult;
 import com.ProTeen.backend.self_diagnosis.domain.Diagnosis_Name;
 import com.ProTeen.backend.shelter.domain.Member;
 import com.ProTeen.backend.shelter.repository.H2MemberRepository;
+import com.ProTeen.backend.shelter.repository.JPAMemberRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,17 +21,17 @@ import java.time.LocalDateTime;
 class H2DiagnosisResultRepositoryTest {
 
     @Autowired
-    private H2DiagnosisResultRepository diagnosisResultRepository;
+    private JPADiagnosisResultRepository diagnosisResultRepository;
     @Autowired
-    private H2DiagnosisRepository diagnosisRepository;
+    private JPADiagnosisRepository diagnosisRepository;
     @Autowired
-    private H2MemberRepository memberRepository;
+    private JPAMemberRepository memberRepository;
 
     @Test
     @DisplayName("테스트 결과 저장, 멤버 별로 구분이 가능여부")
     void save_findByMember(){
         Diagnosis diagnosis1 = new Diagnosis();
-        diagnosis1.setCategory(Diagnosis_Name.FIRST);
+        diagnosis1.setId(Diagnosis_Name.FIRST);
         diagnosisRepository.save(diagnosis1);
 
         Member member = new Member();

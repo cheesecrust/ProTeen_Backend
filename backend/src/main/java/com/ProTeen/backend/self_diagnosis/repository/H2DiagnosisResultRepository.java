@@ -9,11 +9,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
+//@Repository
 @RequiredArgsConstructor
 public class H2DiagnosisResultRepository implements DiagnosisResultRepository{
 
-    @PersistenceContext
+
     private final EntityManager em;
 
     @Override

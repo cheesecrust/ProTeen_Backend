@@ -4,9 +4,7 @@ import com.ProTeen.backend.shelter.domain.Feedback;
 import com.ProTeen.backend.shelter.domain.Member;
 import com.ProTeen.backend.shelter.domain.Score;
 import com.ProTeen.backend.shelter.domain.Shelter;
-import com.ProTeen.backend.shelter.repository.H2FeedbackRepository;
-import com.ProTeen.backend.shelter.repository.H2MemberRepository;
-import com.ProTeen.backend.shelter.repository.H2ShelterRepository;
+import com.ProTeen.backend.shelter.repository.*;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,16 +18,15 @@ import static org.springframework.test.context.transaction.TestTransaction.flagF
 @Transactional
 class FeedbackTest {
     @Autowired
-    private H2FeedbackRepository feedbackRepository;
+    private JPAFeedbackRepository feedbackRepository;
     @Autowired
-    private H2ShelterRepository shelterRepository;
+    private JPAShelterRepository shelterRepository;
     @Autowired
-    private H2MemberRepository memberRepository;
+    private JPAMemberRepository memberRepository;
 
     @Test
     @DisplayName("피드백이_들어가나요?")
     void 피드백이_들어가나요() {
-        flagForCommit();
 
         //쉼터 저장
         Shelter shelter1 = new Shelter();

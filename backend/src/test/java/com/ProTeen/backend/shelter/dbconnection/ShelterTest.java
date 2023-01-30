@@ -2,6 +2,7 @@ package com.ProTeen.backend.shelter.dbconnection;
 
 import com.ProTeen.backend.shelter.domain.Shelter;
 import com.ProTeen.backend.shelter.repository.H2ShelterRepository;
+import com.ProTeen.backend.shelter.repository.JPAShelterRepository;
 import jakarta.transaction.Transactional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -15,7 +16,7 @@ import static org.springframework.test.context.transaction.TestTransaction.flagF
 class ShelterTest {
 
     @Autowired
-    private H2ShelterRepository shelterRepository;
+    private JPAShelterRepository shelterRepository;
 
     @Test
     @DisplayName("쉘터가 들어가나요")

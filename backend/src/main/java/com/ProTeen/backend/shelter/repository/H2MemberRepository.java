@@ -10,10 +10,9 @@ import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-@Repository
+//@Repository
 public class H2MemberRepository implements MemberRepository {
 
-    @PersistenceContext
     private final EntityManager em;
 
 

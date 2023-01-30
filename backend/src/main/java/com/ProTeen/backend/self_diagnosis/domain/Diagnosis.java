@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import org.springframework.context.annotation.Primary;
 
 
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ public class Diagnosis {
     @Column(name= "diagnosis_category")
     @Enumerated(EnumType.STRING)
     @NonNull
-    private Diagnosis_Name category;
+    private Diagnosis_Name id;
 
 
     @ElementCollection

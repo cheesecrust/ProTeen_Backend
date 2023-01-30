@@ -2,6 +2,7 @@ package com.ProTeen.backend.shelter.dbconnection;
 
 import com.ProTeen.backend.shelter.domain.Member;
 import com.ProTeen.backend.shelter.repository.H2MemberRepository;
+import com.ProTeen.backend.shelter.repository.JPAMemberRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,7 @@ import static org.springframework.test.context.transaction.TestTransaction.flagF
 @Transactional
 class MemberTest {
     @Autowired
-    private H2MemberRepository memberRepository;
+    private JPAMemberRepository memberRepository;
 
     @Test
     @DisplayName("회원가입")

@@ -15,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class H2MemberRepositoryTest {
 
     @Autowired
-    private H2MemberRepository memberRepository;
+    private JPAMemberRepository memberRepository;
     @Test
     @DisplayName("멤버 저장과 Id 검색")
     void save_findById() {

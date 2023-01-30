@@ -9,11 +9,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
+//@Repository
 @RequiredArgsConstructor
 public class H2ShelterRepository implements ShelterRepository{
 
-    @PersistenceContext
     private final EntityManager em;
 
     @Override

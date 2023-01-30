@@ -2,13 +2,11 @@ package com.ProTeen.backend.self_diagnosis.repository;
 
 import com.ProTeen.backend.self_diagnosis.domain.Diagnosis;
 import com.ProTeen.backend.self_diagnosis.domain.Diagnosis_Name;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
 import java.util.Optional;
 
-public interface DiagnosisRepository {
+public interface JPADiagnosisRepository extends JpaRepository<Diagnosis,Diagnosis_Name> {
 
-    Diagnosis save(Diagnosis diagnosis);
-    Optional<Diagnosis> findById(Diagnosis_Name diagnosisName);
-    List<Diagnosis> findAll();
+    // save 를 구현해야합니다....
 }

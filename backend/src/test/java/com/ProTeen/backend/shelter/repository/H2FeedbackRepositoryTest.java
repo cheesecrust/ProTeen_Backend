@@ -17,11 +17,11 @@ import java.util.List;
 class H2FeedbackRepositoryTest {
 
     @Autowired
-    private H2FeedbackRepository feedbackRepository;
+    private JPAFeedbackRepository feedbackRepository;
     @Autowired
-    private H2ShelterRepository shelterRepository;
+    private JPAShelterRepository shelterRepository;
     @Autowired
-    private H2MemberRepository memberRepository;
+    private JPAMemberRepository memberRepository;
 
 
 
