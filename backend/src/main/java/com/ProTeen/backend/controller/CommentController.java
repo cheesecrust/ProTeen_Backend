@@ -22,22 +22,26 @@ public class CommentController {
 
     @PostMapping("/create/{id}")
     public ResponseEntity<?> createComment(@AuthenticationPrincipal String userId, @PathVariable Long id, @RequestBody CommentDTO.Request dto){
-        CommentEntity entity = CommentDTO.Request.toEntity(dto);
+        try{
+            CommentEntity entity = CommentDTO.Request.toEntity(dto);
 
-        entity.setId(null);
-        entity.setBoard(boardRepository.findById(id).get());
-        entity.setUserId(userId);
+            entity.setId(null);
+            entity.setBoard(boardRepository.findById(id).get());
+            entity.setUserId(userId);
 
-        entity.setCreatedTime(LocalDateTime.now());
-        entity.setModifiedTime(LocalDateTime.now());
+            entity.setCreatedTime(LocalDateTime.now());
+            entity.setModifiedTime(LocalDateTime.now());
 
-        List<CommentEntity> entities = commentService.create(entity);
+            List<CommentEntity> entities = commentService.create(entity);
 
-        List<CommentDTO.Response> dtos = entities.stream().map(CommentDTO.Response::new).toList();
+            List<CommentDTO.Response> dtos = entities.stream().map(CommentDTO.Response::new).toList();
 
-        ResponseDTO<CommentDTO.Response> response = ResponseDTO.<CommentDTO.Response>builder().data(dtos).build();
+            ResponseDTO<CommentDTO.Response> response = ResponseDTO.<CommentDTO.Response>builder().data(dtos).build();
 
-        return ResponseEntity.ok().body(response);
+            return ResponseEntity.ok().body(response);
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PutMapping("/put/{id}")
@@ -58,13 +62,8 @@ public class CommentController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteComment(@AuthenticationPrincipal String userId, @PathVariable Long id, @RequestBody CommentDTO.Request dto){
+    public ResponseEntity<?> deleteComment(@AuthenticationPrincipal String userId, @PathVariable Long id){
         try{
-            String tmpAuthor = dto.getAuthor(); // 나중에 유저 인증
-            CommentEntity entity = CommentDTO.Request.toEntity(dto);
-
-            entity.setAuthor(tmpAuthor);
-
             commentService.delete(userId, id);
 
             return ResponseEntity.ok().body("삭제 성공했습니다.");

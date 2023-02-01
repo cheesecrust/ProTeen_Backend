@@ -40,6 +40,9 @@ public class BoardEntity {
     @Column(name = "content")
     private String content;
 
+    @Column(name = "category")
+    private String category;
+
     @Column(name = "createTime", updatable = false)
     private LocalDateTime createTime;
 

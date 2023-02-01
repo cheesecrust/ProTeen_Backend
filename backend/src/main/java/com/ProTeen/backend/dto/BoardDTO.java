@@ -18,6 +18,7 @@ public class BoardDTO {
         private String title;
         private String author;
         private String content;
+        private String category;
         private LocalDateTime createTime;
         private LocalDateTime modifiedTime;
         private List<CommentDTO.Response> comment;
@@ -26,6 +27,7 @@ public class BoardDTO {
             this.title = entity.getTitle();
             this.author = entity.getAuthor();
             this.content = entity.getContent();
+            this.category = entity.getCategory();
             this.createTime = entity.getCreateTime();
             this.modifiedTime = entity.getModifiedTime();
             this.comment = entity.getCommentResponse();
@@ -37,6 +39,7 @@ public class BoardDTO {
                     .title(dto.getTitle())
                     .author(dto.getAuthor())
                     .content(dto.getContent())
+                    .category(dto.getCategory())
                     .createTime(dto.getCreateTime())
                     .modifiedTime(dto.getModifiedTime())
                     .build();
@@ -48,6 +51,7 @@ public class BoardDTO {
         private final Long id;
         private final String title;
         private final String author;
+        private final String category;
         private final LocalDateTime createTime;
         private final LocalDateTime modifiedTime;
 
@@ -56,6 +60,7 @@ public class BoardDTO {
             this.id = entity.getId();
             this.title = entity.getTitle();
             this.author = entity.getAuthor();
+            this.category = entity.getCategory();
             this.createTime = entity.getCreateTime();
             this.modifiedTime = entity.getModifiedTime();
         }

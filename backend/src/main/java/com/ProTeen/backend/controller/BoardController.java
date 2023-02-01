@@ -11,6 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -56,13 +57,37 @@ public class BoardController {
         return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping("/read/{id}")
-    public ResponseEntity<?> read(@PathVariable Long id){
-        BoardEntity entity = boardService.read(id);
+    @GetMapping("/read/category/{category}")
+    public ResponseEntity<?> readByCategory(@PathVariable String category){
 
-        BoardDTO.Total response = new BoardDTO.Total(entity);
+        List<String> categoryList = Arrays.asList("information", "question", "help", "free");
+        if(!categoryList.contains(category)){
+            return ResponseEntity.badRequest().body("wrong path");
+        }
+
+        List<BoardEntity> entities = boardService.retrieveByCategory(category);
+
+        List<BoardDTO.Summary> dtos = entities.stream().map(BoardDTO.Summary::new).toList();
+
+        ResponseDTO<BoardDTO.Summary> response = ResponseDTO.<BoardDTO.Summary>builder().data(dtos).build();
 
         return ResponseEntity.ok().body(response);
+    }
+    @GetMapping("/read/{id}")
+    public ResponseEntity<?> read(@PathVariable Long id){
+        try{
+            BoardEntity entity = boardService.read(id);
+
+            BoardDTO.Total response = new BoardDTO.Total(entity);
+
+            return ResponseEntity.ok().body(response);
+        }catch (Exception e){
+            String error = e.getMessage();
+
+            ResponseDTO<BoardDTO> response = ResponseDTO.<BoardDTO>builder().error(error).build();
+
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 
     @PutMapping("/put/{id}")
@@ -89,10 +114,8 @@ public class BoardController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteBoard(@AuthenticationPrincipal String userId, @PathVariable Long id, @RequestBody BoardDTO.Total dto){
+    public ResponseEntity<?> deleteBoard(@AuthenticationPrincipal String userId, @PathVariable Long id){
         try {
-            BoardEntity entity = BoardDTO.Total.toEntity(dto);
-
             List<BoardEntity> entities = boardService.delete(userId, id);
 
             List<BoardDTO.Summary> dtos = entities.stream().map(BoardDTO.Summary::new).toList();

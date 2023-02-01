@@ -24,7 +24,6 @@ public class UserServiceTest {
         createUser.setNickname("jack");
 
         UserEntity newUser = userService.create(createUser);
-        
     }
 
 }

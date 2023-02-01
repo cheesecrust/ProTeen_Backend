@@ -31,7 +31,8 @@ public class BoardService {
         log.info("Entity Id : {} is saved.", entity.getId());
         log.info("Entity createdTime : {}", entity.getCreateTime());
         log.info("Entity modifiedTime : {}", entity.getModifiedTime());
-        log.info("Entity Id : {} is saved.", entity.getId());
+        log.info("Entity author : {} is saved.", entity.getAuthor());
+        log.info("Entity content : {} is saved.", entity.getContent());
 
         return repository.findByAuthor(entity.getAuthor());
     }
@@ -40,6 +41,9 @@ public class BoardService {
         return repository.findAll();
     }
 
+    public List<BoardEntity> retrieveByCategory(final String category){
+        return repository.findByCategory(category);
+    }
     public BoardEntity read(Long id){return repository.findById(id).get();}
 
     public List<BoardEntity> update(final String userId, final Long id, final BoardEntity entity){
@@ -52,6 +56,7 @@ public class BoardService {
         board.setTitle(entity.getTitle());
         board.setAuthor(entity.getAuthor());
         board.setContent(entity.getContent());
+        board.setCategory(entity.getCategory());
         board.setModifiedTime(LocalDateTime.now());
         repository.save(board);
 

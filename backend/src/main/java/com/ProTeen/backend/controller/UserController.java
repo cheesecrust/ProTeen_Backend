@@ -66,6 +66,14 @@ public class UserController {
 
     @PostMapping("/main/signin")
     public ResponseEntity<?> authenticate(@RequestBody UserDTO userDto) {
+        if(userDto.getUserId() == null){
+            return ResponseEntity.badRequest().body("userId can't be null.");
+        }
+
+        if(userDto.getPassword() == null){
+            return ResponseEntity.badRequest().body("password can't be null.");
+        }
+
         UserEntity user = userService.getBycredentials(userDto.getUserId(), userDto.getPassword(), passwordEncoder);
         if (user != null) {
             // 토큰 생성
