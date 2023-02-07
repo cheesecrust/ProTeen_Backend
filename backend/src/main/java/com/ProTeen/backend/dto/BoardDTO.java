@@ -2,7 +2,11 @@ package com.ProTeen.backend.dto;
 
 import com.ProTeen.backend.model.BoardEntity;
 import com.ProTeen.backend.model.CommentEntity;
+import com.ProTeen.backend.model.ImageEntity;
 import lombok.*;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,6 +26,7 @@ public class BoardDTO {
         private LocalDateTime createTime;
         private LocalDateTime modifiedTime;
         private List<CommentDTO.Response> comment;
+        private List<ImageDTO> imageList;
         public Total(final BoardEntity entity) {
             this.id = entity.getId();
             this.title = entity.getTitle();
@@ -30,6 +35,7 @@ public class BoardDTO {
             this.category = entity.getCategory();
             this.createTime = entity.getCreateTime();
             this.modifiedTime = entity.getModifiedTime();
+            this.imageList = entity.getImageResponse();
             this.comment = entity.getCommentResponse();
         }
 

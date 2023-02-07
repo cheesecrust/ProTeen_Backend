@@ -34,6 +34,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests()
                 .requestMatchers("/main/**").permitAll()
+//                .requestMatchers("/board/**").permitAll() // 나중에 삭제 ! test 용
                 .requestMatchers(HttpMethod.GET).permitAll()
                 .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
                 .and()

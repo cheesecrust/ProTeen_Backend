@@ -1,12 +1,14 @@
 package com.ProTeen.backend.model;
 
 import com.ProTeen.backend.dto.CommentDTO;
+import com.ProTeen.backend.dto.ImageDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.core.io.Resource;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -30,7 +32,6 @@ public class BoardEntity {
 //    @GenericGenerator(name = "system-uuid", strategy = "uuid")
 //    private String id;
 
-
     @Column(name = "title")
     private String title;
 
@@ -51,10 +52,18 @@ public class BoardEntity {
 
     @Column(name = "token")
     private String userId;
+
+    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    private List<ImageEntity> imageList = new ArrayList<>();
+
     @OneToMany(mappedBy = "board", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private List<CommentEntity> comments = new ArrayList<CommentEntity>();
 
     public List<CommentDTO.Response> getCommentResponse(){
         return comments.stream().map(CommentDTO.Response::new).toList();
+    }
+
+    public List<ImageDTO> getImageResponse(){
+        return imageList.stream().map(ImageDTO::new).toList();
     }
 }
