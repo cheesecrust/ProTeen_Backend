@@ -1,5 +1,7 @@
 package com.ProTeen.backend.service;
 
+import com.ProTeen.backend.dto.BoardDTO;
+import com.ProTeen.backend.dto.PageDTO;
 import com.ProTeen.backend.model.BoardEntity;
 import com.ProTeen.backend.repository.BoardRepository;
 import jakarta.servlet.http.Cookie;
@@ -8,12 +10,17 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -49,23 +56,39 @@ public class BoardService {
 
     private Cookie createCookieForForNotOverlap(Long postId) {
         Cookie cookie = new Cookie(VIEWCOOKIENAME+postId, String.valueOf(postId));
-        cookie.setMaxAge(getRemainSecondForTommorow()); 	// 하루를 준다.
+        cookie.setMaxAge(getRemainSecondForTomorrow()); 	// 하루를 준다.
         cookie.setHttpOnly(true);				// 서버에서만 조작 가능
         return cookie;
     }
 
-    private int getRemainSecondForTommorow() {
+    private int getRemainSecondForTomorrow() {
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime tommorow = LocalDateTime.now().plusDays(1L).truncatedTo(ChronoUnit.DAYS);
-        return (int) now.until(tommorow, ChronoUnit.SECONDS);
+        LocalDateTime tomorrow = LocalDateTime.now().plusDays(1L).truncatedTo(ChronoUnit.DAYS);
+        return (int) now.until(tomorrow, ChronoUnit.SECONDS);
     }
 
-    public String testService(){
-        BoardEntity entity = BoardEntity.builder().title("first board item").build();
-        repository.save(entity);
-        BoardEntity savedEntity = repository.findById(entity.getId()).get();
-        return savedEntity.getTitle();
+
+    public PageDTO searchAllPaging(int pageNo, int pageSize, String sortBy) {
+
+        // create Pageable instance
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
+
+        Page<BoardEntity> boardPage = repository.findAll(pageable);
+
+        List<BoardEntity> listTodos = boardPage.getContent();
+
+        List<BoardDTO.Summary> content = listTodos.stream().map(BoardDTO.Summary::new).toList();
+
+        return PageDTO.builder()
+                .content(content)	// todoDtoPage.getContent()
+                .pageNo(pageNo)
+                .pageSize(pageSize)
+                .totalElements(boardPage.getTotalElements())
+                .totalPages(boardPage.getTotalPages())
+                .build();
     }
+
+
 
     public List<BoardEntity> create(final BoardEntity entity){
         //Validation

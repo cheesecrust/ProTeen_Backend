@@ -2,6 +2,7 @@ package com.ProTeen.backend.controller;
 
 import com.ProTeen.backend.dto.BoardDTO;
 import com.ProTeen.backend.dto.ImageDTO;
+import com.ProTeen.backend.dto.PageDTO;
 import com.ProTeen.backend.dto.ResponseDTO;
 import com.ProTeen.backend.model.BoardEntity;
 import com.ProTeen.backend.model.ImageEntity;
@@ -41,6 +42,16 @@ public class BoardController {
     private final BoardService boardService;
     private final ImageService imageService;
 
+    @GetMapping("/page")
+    public PageDTO readAllPaging(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy
+    ) {
+        log.info("Read Paging All");
+        return boardService.searchAllPaging(pageNo, pageSize, sortBy);
+    }
+
     private String uploadFile(String originalName, byte[] fileData) throws Exception{
         UUID uuid = UUID.randomUUID();
         String savedName = uuid + "." + originalName.split("\\.")[1];
@@ -66,7 +77,7 @@ public class BoardController {
 
             List<BoardEntity> entities = boardService.create(boardEntity);
 
-            if(!files.isEmpty()){
+            if(files != null){
                 for (MultipartFile file : files) {
                     ImageEntity imgEntity = ImageEntity.builder().build();
 

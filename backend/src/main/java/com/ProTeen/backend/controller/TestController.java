@@ -25,12 +25,4 @@ public class TestController {
         return ResponseEntity.ok().body("success");
     }
 
-    @GetMapping("/test")
-    public ResponseEntity<?> testBoard(){
-        String str = service.testService();
-        List<String> list = new ArrayList<>();
-        list.add(str);
-        ResponseDTO<String> response = ResponseDTO.<String>builder().data(list).build();
-        return ResponseEntity.ok().body(response);
-    }
 }
