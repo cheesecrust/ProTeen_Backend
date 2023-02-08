@@ -15,6 +15,5 @@ public class ImageService {
 
     public void create(final ImageEntity entity){
         imageRepository.save(entity);
-        System.out.println("success");
     }
 }

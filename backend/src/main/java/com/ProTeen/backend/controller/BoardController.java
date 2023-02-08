@@ -8,6 +8,8 @@ import com.ProTeen.backend.model.ImageEntity;
 import com.ProTeen.backend.repository.BoardRepository;
 import com.ProTeen.backend.service.BoardService;
 import com.ProTeen.backend.service.ImageService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
@@ -41,8 +43,7 @@ public class BoardController {
 
     private String uploadFile(String originalName, byte[] fileData) throws Exception{
         UUID uuid = UUID.randomUUID();
-        System.out.println(path);
-        String savedName = uuid.toString() + "." + originalName.split("\\.")[1];
+        String savedName = uuid + "." + originalName.split("\\.")[1];
         File target =new File(path, savedName);
 
         FileCopyUtils.copy(fileData, target);
@@ -120,11 +121,13 @@ public class BoardController {
         return ResponseEntity.ok().body(response);
     }
     @GetMapping(value = "/read/{id}")
-    public ResponseEntity<?> read(@PathVariable Long id){
+    public ResponseEntity<?> read(@PathVariable Long id, HttpServletRequest HTTPRequest, HttpServletResponse HTTPResponse){
         try{
             BoardEntity entity = boardService.read(id);
 
             BoardDTO.Total response = new BoardDTO.Total(entity);
+
+            boardService.updateView(id, HTTPRequest, HTTPResponse);
 
             return ResponseEntity.ok().body(response);
         }catch (Exception e){

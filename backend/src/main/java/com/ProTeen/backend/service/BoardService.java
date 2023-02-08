@@ -2,11 +2,16 @@ package com.ProTeen.backend.service;
 
 import com.ProTeen.backend.model.BoardEntity;
 import com.ProTeen.backend.repository.BoardRepository;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +20,46 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BoardService {
     private final BoardRepository repository;
+
+    private final static String VIEWCOOKIENAME = "alreadyViewCookie";
+
+    @Transactional
+    public void updateView(Long boardId, HttpServletRequest request, HttpServletResponse response) {
+        
+        Cookie[] cookies = request.getCookies();
+        boolean checkCookie = false;
+        if(cookies != null){
+            for (Cookie cookie : cookies)
+            {
+                // 이미 조회를 한 경우 체크
+                if (cookie.getName().equals(VIEWCOOKIENAME+boardId)) checkCookie = true;
+
+            }
+            if(!checkCookie){
+                Cookie newCookie = createCookieForForNotOverlap(boardId);
+                response.addCookie(newCookie);
+                repository.updateView(boardId);
+            }
+        } else {
+            Cookie newCookie = createCookieForForNotOverlap(boardId);
+            response.addCookie(newCookie);
+            repository.updateView(boardId);
+        }
+    }
+
+    private Cookie createCookieForForNotOverlap(Long postId) {
+        Cookie cookie = new Cookie(VIEWCOOKIENAME+postId, String.valueOf(postId));
+        cookie.setMaxAge(getRemainSecondForTommorow()); 	// 하루를 준다.
+        cookie.setHttpOnly(true);				// 서버에서만 조작 가능
+        return cookie;
+    }
+
+    private int getRemainSecondForTommorow() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime tommorow = LocalDateTime.now().plusDays(1L).truncatedTo(ChronoUnit.DAYS);
+        return (int) now.until(tommorow, ChronoUnit.SECONDS);
+    }
+
     public String testService(){
         BoardEntity entity = BoardEntity.builder().title("first board item").build();
         repository.save(entity);
@@ -27,12 +72,6 @@ public class BoardService {
         ValidationService.boardValidate(entity);
 
         repository.save(entity);
-
-        log.info("Entity Id : {} is saved.", entity.getId());
-        log.info("Entity createdTime : {}", entity.getCreateTime());
-        log.info("Entity modifiedTime : {}", entity.getModifiedTime());
-        log.info("Entity author : {} is saved.", entity.getAuthor());
-        log.info("Entity content : {} is saved.", entity.getContent());
 
         return repository.findByAuthor(entity.getAuthor());
     }
@@ -57,6 +96,7 @@ public class BoardService {
         board.setAuthor(entity.getAuthor());
         board.setContent(entity.getContent());
         board.setCategory(entity.getCategory());
+        board.setView(entity.getView());
         board.setModifiedTime(LocalDateTime.now());
         repository.save(board);
 

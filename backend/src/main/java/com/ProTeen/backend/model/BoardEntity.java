@@ -7,10 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
-import org.springframework.core.io.Resource;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -52,6 +48,9 @@ public class BoardEntity {
 
     @Column(name = "token")
     private String userId;
+
+    @Column(columnDefinition = "integer default 0", name = "view")
+    private int view;
 
     @OneToMany(mappedBy = "board", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private List<ImageEntity> imageList = new ArrayList<>();

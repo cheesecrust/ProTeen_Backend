@@ -6,9 +6,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-
 public class CommentDTO {
-
     @Builder
     @Data
     @NoArgsConstructor
@@ -19,9 +17,7 @@ public class CommentDTO {
         private String content;
         private LocalDateTime createdTime;
         private LocalDateTime modifiedTime;
-
         private BoardEntity board;
-
         public Request(final CommentEntity entity) {
             this.id = entity.getId();
             this.author = entity.getAuthor();
@@ -41,7 +37,6 @@ public class CommentDTO {
                     .board(dto.getBoard())
                     .build();
         }
-
     }
 
     @Getter
