@@ -1,6 +1,7 @@
 package com.ProTeen.backend.service;
 
-import com.ProTeen.backend.repository.BoardRepository;
+import com.ProTeen.backend.community.repository.BoardRepository;
+import com.ProTeen.backend.community.service.BoardService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

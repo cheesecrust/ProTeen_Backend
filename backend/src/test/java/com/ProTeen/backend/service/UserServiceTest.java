@@ -1,8 +1,8 @@
 package com.ProTeen.backend.service;
 
-import com.ProTeen.backend.dto.UserDTO;
-import com.ProTeen.backend.model.UserEntity;
-import com.ProTeen.backend.repository.UserRepository;
+import com.ProTeen.backend.user.model.UserEntity;
+import com.ProTeen.backend.user.repository.UserRepository;
+import com.ProTeen.backend.user.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

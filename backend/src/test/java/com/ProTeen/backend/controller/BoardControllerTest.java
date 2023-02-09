@@ -1,6 +1,6 @@
 package com.ProTeen.backend.controller;
 
-import com.ProTeen.backend.dto.BoardDTO;
+import com.ProTeen.backend.community.dto.BoardDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
