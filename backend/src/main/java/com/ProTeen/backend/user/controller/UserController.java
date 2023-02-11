@@ -5,6 +5,7 @@ import com.ProTeen.backend.user.security.TokenProvider;
 import com.ProTeen.backend.community.dto.ResponseDTO;
 import com.ProTeen.backend.user.model.UserEntity;
 import com.ProTeen.backend.user.service.UserService;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -56,7 +57,6 @@ public class UserController {
 
 
             return ResponseEntity.ok().body(responseUserDTO);
-
         } catch (Exception e) {
             ResponseDTO responseDTO = ResponseDTO.builder().error(e.getMessage())
                     .build();

@@ -1,6 +1,5 @@
 package com.ProTeen.backend.user.security;
 
-
 import com.ProTeen.backend.user.model.UserEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

@@ -1,10 +1,12 @@
 package com.ProTeen.backend.user.config;
 
+
 import com.ProTeen.backend.user.config.auth.CustomOAuth2UserService;
 import com.ProTeen.backend.user.security.JwtAuthenticationFilter;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpMethod;
+
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -29,6 +31,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
+
+        // h2-console 쓰기 위한 설정
+        http.authorizeHttpRequests()
+                .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**"))
+                .permitAll()
+                .and().csrf()
+                .disable().headers().addHeaderWriter(new XFrameOptionsHeaderWriter(
+                        XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN));
+
+
         http.cors()
                 .and()
                 .httpBasic().disable() // basic 인증 disable
@@ -38,20 +50,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers("/main/**").permitAll()
                 .requestMatchers(HttpMethod.GET).permitAll()
-                .requestMatchers("oauth/**").permitAll()
-                .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
                 .and()
                 .authorizeHttpRequests()
                 .anyRequest()
-                .authenticated() // 이외의 경로는 인증
-                .and()
-                .csrf()
-                .disable().headers().addHeaderWriter(new XFrameOptionsHeaderWriter(
-                        XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN));
-//                .and()
-//                .oauth2Login()
-//                .userInfoEndpoint() // OAuth2 로그인 성공 후 가져올 설정들
-//                .userService(customOAuth2UserService); // 서버에서 사용자 정보를 가져온 상태에서 추가로 진행하고자 하는 기능 명시
+                .authenticated();
 
 
         // filter 등록
@@ -65,4 +67,5 @@ public class SecurityConfig {
 
         return http.build();
     }
+
 }
