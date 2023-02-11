@@ -1,5 +1,6 @@
 package com.ProTeen.backend.shelter.entity;
-import com.ProTeen.backend.user.entity.User;
+
+import com.ProTeen.backend.user.model.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,7 +20,7 @@ public class Feedback {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private UserEntity user;
 
     @ManyToOne
     @JoinColumn(name = "shelter_id")

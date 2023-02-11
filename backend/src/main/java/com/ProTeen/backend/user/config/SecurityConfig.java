@@ -50,6 +50,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers("/main/**").permitAll()
                 .requestMatchers(HttpMethod.GET).permitAll()
+                .requestMatchers("/diagnosis/question/**").permitAll()
                 .and()
                 .authorizeHttpRequests()
                 .anyRequest()

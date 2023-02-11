@@ -1,6 +1,6 @@
 package com.ProTeen.backend.self_diagnosis.entity;
 
-import com.ProTeen.backend.user.entity.User;
+import com.ProTeen.backend.user.model.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,7 +19,7 @@ public class DiagnosisResult {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private UserEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "diagnosis_category")

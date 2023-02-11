@@ -8,9 +8,9 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface UserRepository extends JpaRepository<User, String> {
+public interface UserRepository extends JpaRepository<UserEntity, String> {
 
-    User findByUserId(String userId);
+    UserEntity findByUserId(String userId);
     Boolean existsByUserId(String userId);
     Boolean existsByNickname(String nickname);
     @Query(value = "select role from users where id = :id", nativeQuery = true)
