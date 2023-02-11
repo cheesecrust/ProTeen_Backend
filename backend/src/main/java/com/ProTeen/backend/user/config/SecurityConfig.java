@@ -1,7 +1,12 @@
 package com.ProTeen.backend.user.config;
 
+
+import com.ProTeen.backend.user.config.auth.CustomOAuth2UserService;
 import com.ProTeen.backend.user.security.JwtAuthenticationFilter;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpMethod;
+
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -16,12 +21,16 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor
+@RequiredArgsConstructor
 public class SecurityConfig {
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
+    @Autowired
+    private CustomOAuth2UserService customOAuth2UserService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
 
         // h2-console 쓰기 위한 설정
         http.authorizeHttpRequests()
@@ -38,11 +47,13 @@ public class SecurityConfig {
                 // 세션 기반이 아님을 선언
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                // 임시로 해놓은 권한설정임 나중에 필요에 맞게 고쳐쓰기
                 .authorizeHttpRequests()
-                .requestMatchers("/user/**").hasRole("USER")
-                .requestMatchers("/**").permitAll();
-//                    .anyRequest().authenticated();
+                .requestMatchers("/main/**").permitAll()
+                .requestMatchers(HttpMethod.GET).permitAll()
+                .and()
+                .authorizeHttpRequests()
+                .anyRequest()
+                .authenticated();
 
 
         // filter 등록
@@ -56,4 +67,5 @@ public class SecurityConfig {
 
         return http.build();
     }
+
 }

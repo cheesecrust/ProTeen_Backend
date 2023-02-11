@@ -1,6 +1,5 @@
 package com.ProTeen.backend.user.security;
 
-
 import com.ProTeen.backend.user.service.UserService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -13,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -38,7 +38,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterchain) throws ServletException, IOException {
-
         try {
             // 요청에서 토큰 가져오기
             String token = parseBearerToken(request);
@@ -47,6 +46,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (token != null && !token.equalsIgnoreCase("null")) {
                 // 토큰의 payload(claims) 가져오기. 위조된 경우에 예외 처리됨
                 Claims claims = tokenProvider.validateAndGetUserPayload(token);
+
                 String id = claims.getSubject();
                 Date expireDate = claims.getExpiration();
                 if (expireDate.before(new Date())) {
@@ -67,6 +67,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
                 securityContext.setAuthentication(authentication);
                 SecurityContextHolder.setContext(securityContext);
+
+            }else{
+                System.out.println("No token");
             }
 
         } catch (Exception e) {
@@ -85,4 +88,3 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return null;
     }
 }
-

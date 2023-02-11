@@ -1,6 +1,6 @@
 package com.ProTeen.backend.user.security;
 
-import com.ProTeen.backend.user.entity.User;
+import com.ProTeen.backend.user.model.UserEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -20,7 +20,7 @@ public class TokenProvider {
     // private static final String SECRET_KEY = "NMA8JPctFuna59f5";
     private final SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
-    public String create(User user) {
+    public String create(UserEntity user) {
         // 기한은 지금부터 1일로 설정
         Date expiryDate = Date.from(
                 Instant.now().plus(1, ChronoUnit.DAYS)
