@@ -96,8 +96,9 @@ public class UserController {
         }
     }
 
-    @GetMapping("/test")
-    public ResponseEntity<String> tokentest() {
+    @PostMapping("/test")
+    public ResponseEntity<String> tokenTest(@RequestParam String code) {
+        System.out.println(code);
         return ResponseEntity.ok("OKOKOKOK");
     }
 }
