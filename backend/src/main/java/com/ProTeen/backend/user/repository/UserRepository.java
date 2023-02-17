@@ -15,5 +15,9 @@ public interface UserRepository extends JpaRepository<UserEntity, String> {
     Boolean existsByNickname(String nickname);
     @Query(value = "select role from users where id = :id", nativeQuery = true)
     String getRoleById(String id);
+    @Query(value = "select nickname from users where id = :id", nativeQuery = true)
+    String getNicknameById(String id);
+    @Query(value = "select user_id from users where id = :id", nativeQuery = true)
+    String getUserIdById(String id);
 
 }

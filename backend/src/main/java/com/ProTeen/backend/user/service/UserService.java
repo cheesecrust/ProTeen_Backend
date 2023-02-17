@@ -1,10 +1,14 @@
 package com.ProTeen.backend.user.service;
 
+import com.ProTeen.backend.user.dto.TokenDTO;
+import com.ProTeen.backend.user.security.TokenProvider;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.ProTeen.backend.user.repository.UserRepository;
 import com.ProTeen.backend.user.model.UserEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +29,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private TokenProvider tokenProvider;
 
     public UserEntity create(final UserEntity user) {
     
@@ -58,6 +65,13 @@ public class UserService {
         return authority;
     }
 
+    public String getNicknameById(String id) {
+        return userRepository.getNicknameById(id);
+    }
+
+    public String getUserIdById(String id) {
+        return userRepository.getUserIdById(id);
+    }
 
     public boolean userIdDuplicated(String userID) {
         return userRepository.existsByUserId(userID);
@@ -67,6 +81,7 @@ public class UserService {
         return userRepository.existsByNickname(nickname);
     }
 
-
-
+    public UserEntity getUserEntityById(String id) {
+        return userRepository.findById(id).orElse(null);
+    }
 }

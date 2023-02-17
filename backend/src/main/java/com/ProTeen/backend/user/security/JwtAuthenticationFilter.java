@@ -2,6 +2,7 @@ package com.ProTeen.backend.user.security;
 
 import com.ProTeen.backend.user.service.UserService;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,6 +19,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -28,6 +31,8 @@ import java.util.Date;
 @Component
 @NoArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
     private TokenProvider tokenProvider;
@@ -46,30 +51,32 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (token != null && !token.equalsIgnoreCase("null")) {
                 // 토큰의 payload(claims) 가져오기. 위조된 경우에 예외 처리됨
                 Claims claims = tokenProvider.validateAndGetUserPayload(token);
-
-                String id = claims.getSubject();
-                Date expireDate = claims.getExpiration();
-                if (expireDate.before(new Date())) {
-                    throw new Exception();
+                if (claims == null) {
+                    throw new JwtException("잘못된 토큰입니다.");
                 }
-                log.info("Authenticated user ID : " + id + "   <-- 로그인 된 유저입니다.");
+                String isLogout = (String)redisTemplate.opsForValue().get(token);
+                if (ObjectUtils.isEmpty(isLogout)) {
+                    String id = claims.getSubject();
 
-                Collection<? extends GrantedAuthority> authority = userService.getAuthorities(id);
+                    log.info("Authenticated user ID : " + id + "   <-- 로그인 된 유저입니다.");
 
-                // 인증 완료. SecurityContextHolder에 등록해야 인증된 사용자라고 생각함.
-                AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        id, // 인증된 사용자의 정보. 문자열이 아니어도 아무것이나 넣을 수 있음. 보통
-                        // UserDetails라는 오브젝트를 넣긴함
-                        null,
-                        authority
-                );
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-                securityContext.setAuthentication(authentication);
-                SecurityContextHolder.setContext(securityContext);
+                    Collection<? extends GrantedAuthority> authority = userService.getAuthorities(id);
 
-            }else{
-                System.out.println("No token");
+                    // 인증 완료. SecurityContextHolder에 등록해야 인증된 사용자라고 생각함.
+                    AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                            id, // 인증된 사용자의 정보. 문자열이 아니어도 아무것이나 넣을 수 있음. 보통
+                            // UserDetails라는 오브젝트를 넣긴함
+                            null,
+                            authority
+                    );
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+                    securityContext.setAuthentication(authentication);
+                    SecurityContextHolder.setContext(securityContext);
+                }
+            }
+            else {
+                log.info("No token");
             }
 
         } catch (Exception e) {

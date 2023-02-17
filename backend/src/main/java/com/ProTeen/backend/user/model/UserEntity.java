@@ -1,10 +1,7 @@
 package com.ProTeen.backend.user.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -16,6 +13,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
 @Table(name = "USERS", uniqueConstraints = {@UniqueConstraint(columnNames = {"userId", "nickName"})})
 public class UserEntity {
 
@@ -39,12 +37,4 @@ public class UserEntity {
     @Column
     private String role;
 
-//    @OneToMany(mappedBy = "user")
-//    private List<Article> articles = new ArrayList<>();
-//
-//    @OneToMany(mappedBy = "user")
-//    private List<Comment> comments = new ArrayList<>();
-//
-//    @OneToMany(mappedBy = "user")
-//    private List<Test> test = new ArrayList<>();
 }

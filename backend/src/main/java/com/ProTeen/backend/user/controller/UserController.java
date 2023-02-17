@@ -1,5 +1,6 @@
 package com.ProTeen.backend.user.controller;
 
+import com.ProTeen.backend.user.dto.TokenDTO;
 import com.ProTeen.backend.user.dto.UserDTO;
 import com.ProTeen.backend.user.security.TokenProvider;
 import com.ProTeen.backend.community.dto.ResponseDTO;
@@ -16,8 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-
 @Slf4j
+@RequestMapping("main")
 @RestController
 public class UserController {
 
@@ -29,7 +30,7 @@ public class UserController {
 
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    @PostMapping("/main/signup")
+    @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody UserDTO userDto) {
         log.info(userDto.toString());
         try {
@@ -58,13 +59,11 @@ public class UserController {
 
             return ResponseEntity.ok().body(responseUserDTO);
         } catch (Exception e) {
-            ResponseDTO responseDTO = ResponseDTO.builder().error(e.getMessage())
-                    .build();
-            return ResponseEntity.badRequest().body(responseDTO);
+            return ResponseEntity.badRequest().body("회원가입 실패");
         }
     }
 
-    @PostMapping("/main/signin")
+    @PostMapping("/signin")
     public ResponseEntity<?> authenticate(@RequestBody UserDTO userDto) {
         if(userDto.getUserId() == null){
             return ResponseEntity.badRequest().body("userId can't be null.");
@@ -75,30 +74,69 @@ public class UserController {
         }
 
         UserEntity user = userService.getBycredentials(userDto.getUserId(), userDto.getPassword(), passwordEncoder);
+
         if (user != null) {
             // 토큰 생성
-            final String token = tokenProvider.create(user);
+            final String accessToken = tokenProvider.createAccessToken(user.getId());
+            final String refreshToken = tokenProvider.createRefreshToken(user.getId());
             final UserDTO responseUserDTO = UserDTO.builder()
                     .userId(user.getUserId())
                     .id(user.getId())
                     .nickname(user.getNickname())
-                    .token(token)
+                    .accessToken(accessToken)
+                    .refreshToken(refreshToken)
                     .build();
 
             log.info(responseUserDTO.toString() + "   <------------토큰 발급 및 유저 정보");
+
+
             return ResponseEntity.ok().body(responseUserDTO);
         }
         else {
-            ResponseDTO responseDTO = ResponseDTO.builder()
-                    .error("Login Failed")
-                    .build();
-            return ResponseEntity.badRequest().body(responseDTO);
+            return ResponseEntity.badRequest().body("아이디나 비밀번호가 틀립니다");
         }
     }
 
-    @PostMapping("/test")
-    public ResponseEntity<String> tokenTest(@RequestParam String code) {
-        System.out.println(code);
-        return ResponseEntity.ok("OKOKOKOK");
+    @PostMapping("/reissue")
+    public ResponseEntity<?> reissue(@RequestBody TokenDTO tokenDTO) {
+        if (tokenDTO.getAccessToken() == null) {
+            return ResponseEntity.badRequest().body("AccessToken is null");
+        }
+        if (tokenDTO.getRefreshToken() == null) {
+            return ResponseEntity.badRequest().body("RefreshToken is null");
+        }
+        return tokenProvider.reissue(tokenDTO);
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestBody TokenDTO tokenDTO) {
+        if (tokenDTO.getAccessToken() == null) {
+            return ResponseEntity.badRequest().body("AccessToken is null");
+        }
+        if (tokenDTO.getRefreshToken() == null) {
+            return ResponseEntity.badRequest().body("RefreshToken is null");
+        }
+        return tokenProvider.logout(tokenDTO);
+    }
+
+    @GetMapping("/isDuplicatedId")
+    public ResponseEntity<?> idDuplicated(@RequestParam("userId") String userId) {
+        if (userService.userIdDuplicated(userId)) {
+            return ResponseEntity.ok().body("중복되는 아이디입니다");
+        }
+        else {
+            return ResponseEntity.ok().body("사용가능한 아이디입니다");
+        }
+    }
+
+    @GetMapping("/isDuplicatedNickname")
+    public ResponseEntity<?> nicknameDuplicated(@RequestParam("nickname") String nickname) {
+        if (userService.nicknameDuplicated(nickname)) {
+            return ResponseEntity.ok().body("중복되는 닉네임입니다");
+        }
+        else {
+            return ResponseEntity.ok().body("사용가능한 닉네임입니다");
+        }
+    }
+
 }
