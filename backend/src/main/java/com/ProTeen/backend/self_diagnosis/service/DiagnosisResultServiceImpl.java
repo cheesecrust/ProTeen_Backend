@@ -31,7 +31,7 @@ public class DiagnosisResultServiceImpl implements DiagnosisResultService{
         return diagnosisResultRepository.findByUser(user);
     }
     public List<DiagnosisResultDTO> searchResultDTOByUser(String userId) {
-        UserEntity user = userRepository.findById(userId).get();
+        UserEntity user = userRepository.findById(userId).orElse(null);
         return diagnosisResultDtoRepository.findByUser(user);
     }
 }

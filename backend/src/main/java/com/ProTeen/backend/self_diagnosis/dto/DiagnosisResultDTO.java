@@ -3,7 +3,6 @@ package com.ProTeen.backend.self_diagnosis.dto;
 import lombok.Data;
 
 @Data
-
 public class DiagnosisResultDTO {
     private int score;
     private String diagnosis;
